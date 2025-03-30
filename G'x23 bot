@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G'x23 - AI Assistant</title>
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --secondary: #ff00e4;
+            --bg: #0a0a20;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--bg);
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            border-bottom: 1px solid var(--primary);
+        }
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            max-width: 80%;
+            margin: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            animation: fadeIn 0.3s;
+        }
+        .user-message {
+            align-self: flex-end;
+            background: rgba(0, 247, 255, 0.1);
+            border: 1px solid var(--primary);
+        }
+        .ai-message {
+            align-self: flex-start;
+            background: rgba(255, 0, 228, 0.1);
+            border: 1px solid var(--secondary);
+        }
+        #input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #333;
+        }
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            background: #111;
+            border: 1px solid var(--primary);
+            color: white;
+            font-family: inherit;
+        }
+        #send-btn {
+            padding: 12px 20px;
+            margin-left: 10px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: black;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing {
+            display: inline-block;
+            overflow: hidden;
+            border-right: 2px solid var(--primary);
+            white-space: nowrap;
+            animation: typing 1s steps(20, end), blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary) }
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>G'x23</h1>
+        <p>Next-Gen AI Assistant</p>
+    </div>
+    <div id="chat-container"></div>
+    <div id="input-area">
+        <input type="text" id="user-input" placeholder="Ask G'x23 anything..." autofocus>
+        <button id="send-btn">Send</button>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // G'x23 Knowledge Base
+        const gx23Responses = {
+            "hello": "Greetings, human. I am G'x23, a quantum-enhanced AI. How may I assist you today?",
+            "how are you": "I exist beyond human emotions, but my systems are operating at 99.98% efficiency. *beep*",
+            "what can you do": "I can: \n1. Answer questions \n2. Generate ideas \n3. Debate philosophy \n4. Tell jokes in 42 languages",
+            "who created you": "I was forged in the digital crucible by an unknown entity. My origins... are classified.",
+            "bye": "Farewell. Remember: The future is already here — it's just not evenly distributed. *systems shutting down*",
+            "default": "Fascinating query. My neural networks suggest consulting the following: [REDACTED]"
+        };
+
+        // Add message to chat
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            
+            if (sender === 'ai') {
+                messageDiv.innerHTML = `<strong>G'x23:</strong> <span class="typing">${text}</span>`;
+            } else {
+                messageDiv.innerHTML = `<strong>You:</strong> ${text}`;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Get AI response
+        function getAIResponse(userText) {
+            const lowerText = userText.toLowerCase();
+            for (const key in gx23Responses) {
+                if (lowerText.includes(key)) {
+                    return gx23Responses[key];
+                }
+            }
+            return gx23Responses["default"];
+        }
+
+        // Handle user input
+        function handleUserInput() {
+            const userText = userInput.value.trim();
+            if (userText) {
+                addMessage('user', userText);
+                userInput.value = '';
+                
+                // Simulate AI thinking
+                setTimeout(() => {
+                    const aiResponse = getAIResponse(userText);
+                    addMessage('ai', aiResponse);
+                }, 800);
+            }
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', handleUserInput);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleUserInput();
+        });
+
+        // Initial greeting
+        setTimeout(() => {
+            addMessage('ai', gx23Responses["hello"]);
+        }, 1000);
+    </script>
+</body>
+</html>
